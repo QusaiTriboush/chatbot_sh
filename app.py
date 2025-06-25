@@ -3,7 +3,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 import requests
 
-app = Flask(__name__)
+app = Flask(name)
 
 # 1. إعداد embedding (نفس الموديل اللي خزّنت به)
 embedding_model = HuggingFaceEmbeddings(
@@ -12,9 +12,25 @@ embedding_model = HuggingFaceEmbeddings(
     encode_kwargs={"normalize_embeddings": True}
 )
 
+url = "https://drive.google.com/drive/folders/1oKtmhfJNdmBfXJwtn4gC0nlezETNr-Kv?usp=sharing"
+
+# المكان اللي راح نحفظ فيه الملف
+local_path = "chroma_dataset/chroma_bge_db"
+
+# تنزيل الملف وحفظه محليًا
+response = requests.get(url)
+with open(local_path, "wb") as f:
+    f.write(response.content)
+
+# بعدين تستخدم هذا المسار مع Chroma
+vector_store = Chroma(
+    persist_directory="data",
+    embedding_function=embedding_model
+)
+
 # 2. تحميل قاعدة البيانات Chroma
 vector_store = Chroma(
-    persist_directory="/home/shorouk/Documents/pro/chatbot/chroma_bge_db",
+    persist_directory="chroma_bge_db",
     embedding_function=embedding_model
 )
 retriever = vector_store.as_retriever(
@@ -86,5 +102,5 @@ Question:
     return answer
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if name == 'main':
+    app.run(host='0.0.0.0', port=5001)
