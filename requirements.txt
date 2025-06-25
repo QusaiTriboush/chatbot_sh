@@ -1,7 +1,7 @@
 --only-binary :all:
-Flask==3.0.2
-langchain-community==0.0.29
-chromadb==0.4.24
-requests==2.31.0
-sentence-transformers==2.3.1
-huggingface-hub==0.21.4
+Flask
+langchain-community
+chromadb
+requests
+sentence-transformers
+huggingface-hub
